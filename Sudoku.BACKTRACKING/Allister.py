@@ -48,13 +48,13 @@ def estValide(grille, position):
     #print("j:", type(j))
 
     if (grille[i][j] != 0):
-        return Globals.estValide(grille, position+1)
+        return estValide(grille, position+1)
 
     for k in range(1, 10):
-        if Globals.absentSurLigne(k, grille, i) and Globals.absentSurColonne(k, grille, j) and Globals.absentSurBloc(k, grille, i, j):
+        if absentSurLigne(k, grille, i) and absentSurColonne(k, grille, j) and absentSurBloc(k, grille, i, j):
             grille[i][j] = k
 
-            if Globals.estValide(grille, position+1):
+            if estValide(grille, position+1):
                 return True
     grille[i][j] = 0
 
