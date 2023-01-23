@@ -11,6 +11,7 @@ def affichage(grille):
         if not(math.fmod((i+1), 3)):
             print(" -------------------------\n")
     print("\n\n")
+    return grille
 
 def absentSurLigne(k, grille, i):
     for j in range(0, 9):
@@ -61,16 +62,14 @@ def estValide(grille, position):
 
 
 
-def main():
-    grille = [[9, 0, 0, 1, 0, 0, 0, 0, 5], [0, 0, 5, 0, 9, 0, 2, 0, 1], [8, 0, 0, 0, 4, 0, 0, 0, 0], [0, 0, 0, 0, 8, 0, 0, 0, 0], [0, 0, 0, 7, 0, 0, 0, 0, 0], [0, 0, 0, 0, 2, 6, 0, 0, 9], [2, 0, 0, 3, 0, 0, 0, 0, 6], [0, 0, 0, 2, 0, 0, 9, 0, 0], [0, 0, 1, 9, 0, 4, 5, 7, 0]]
+grille = [[9, 0, 0, 1, 0, 0, 0, 0, 5], [0, 0, 5, 0, 9, 0, 2, 0, 1], [8, 0, 0, 0, 4, 0, 0, 0, 0], [0, 0, 0, 0, 8, 0, 0, 0, 0], [0, 0, 0, 7, 0, 0, 0, 0, 0], [0, 0, 0, 0, 2, 6, 0, 0, 9], [2, 0, 0, 3, 0, 0, 0, 0, 6], [0, 0, 0, 2, 0, 0, 9, 0, 0], [0, 0, 1, 9, 0, 4, 5, 7, 0]]
 
-    print("Grille vide :\n")
-    affichage(grille)
+print("Grille vide :\n")
+grille = affichage(grille)
 
-    estValide(grille, 0)
+estValide(grille, 0)
 
-    print("Grille complétée :\n")
-    affichage(grille)
+print("Grille complétée :\n")
+grilleComplete = affichage(grille)
 
-
-main()
+print(grilleComplete)
