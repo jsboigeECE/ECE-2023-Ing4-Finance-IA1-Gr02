@@ -2,7 +2,7 @@
 
 namespace ClassLibrary1;
 
-public class Allister : ISudokuSolver
+public class BACKTRACKING : ISudokuSolver
 {
     public SudokuGrid Solve(SudokuGrid s)
     {

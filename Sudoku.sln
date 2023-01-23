@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Puzzles", "Puzzles", "{5351
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sudoku.Z3Solvers", "Sudoku.Z3Solvers\Sudoku.Z3Solvers.csproj", "{A35C20E9-B1AC-47FD-9213-E84C6C37C2E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.Allister", "Sudoku.Allister\Sudoku.Allister.csproj", "{D16EA7D3-EEA7-45ED-A987-59B76CF41EE8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.BACKTRACKING", "Sudoku.BACKTRACKING\Sudoku.BACKTRACKING.csproj", "{D16EA7D3-EEA7-45ED-A987-59B76CF41EE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
