@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Python.Deployment;
 using Python.Runtime;
 
@@ -29,30 +30,45 @@ namespace Sudoku.Shared
 
         protected static void InstallPythonComponents()
         {
+			Task task = Task.Run(() => InstallPythonComponentsAsync());
+			task.Wait();
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                InstallMac();
-            }
-            else
-            {
-                InstallEmbedded();
-            }
-        }
+		}
 
-        protected void InstallPipModule(string moduleName)
+		protected static async Task InstallPythonComponentsAsync()
+		{
+
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+			{
+
+				await InstallMac();
+			}
+			else
+			{
+				await InstallEmbedded();
+			}
+		}
+		protected void InstallPipModule(string moduleName, string version = "", bool force = false)
+		{
+			Task task = Task.Run(() => InstallPipModuleAsync(moduleName, version, force));
+			task.Wait();
+
+		}
+
+
+		protected async Task InstallPipModuleAsync(string moduleName, string version = "", bool force = false)
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                MacInstaller.PipInstallModule(moduleName);
+               await MacInstaller.PipInstallModule(moduleName, version, force);
             }
             else
             {
-                Installer.PipInstallModule(moduleName);
+               await Installer.PipInstallModule(moduleName, version, force);
             }
         }
 
-        private static void InstallMac()
+        private static async Task InstallMac()
         {
 
             Console.WriteLine($"PythonDll={MacInstaller.LibFileName}");
@@ -98,50 +114,74 @@ namespace Sudoku.Shared
             // PythonEngine.PythonHome = localInstallPath;
             // PythonEngine.PythonPath = pythonPath;
 
-            MacInstaller.TryInstallPip();
+            await MacInstaller.TryInstallPip();
         }
 
 
 
 
-        private static void InstallEmbedded()
+        private static async Task InstallEmbedded()
         {
 
-            Runtime.PythonDLL = "python37.dll";
+			//Runtime.PythonDLL = "python37.dll";
 
-            // // set the download source
-            // Python.Deployment.Installer.Source = new Installer.DownloadInstallationSource()
-            // {
-            //     DownloadUrl = @"https://www.python.org/ftp/python/3.7.3/python-3.7.3-embed-amd64.zip",
-            // };
-            //
-            // // install in local directory. if you don't set it will install in local app data of your user account
-            // Python.Deployment.Installer.InstallPath = Path.GetFullPath(".");
-            //
-            // see what the installer is doing
+			// // set the download source
+			// Python.Deployment.Installer.Source = new Installer.DownloadInstallationSource()
+			// {
+			//     DownloadUrl = @"https://www.python.org/ftp/python/3.7.3/python-3.7.3-embed-amd64.zip",
+			// };
+			//
+			// // install in local directory. if you don't set it will install in local app data of your user account
+			// Python.Deployment.Installer.InstallPath = Path.GetFullPath(".");
+			//
+			// see what the installer is doing
+
+			Runtime.PythonDLL = "python38.dll";
+			Python.Deployment.Installer.Source = new Installer.DownloadInstallationSource()
+            {
+                DownloadUrl = @"https://www.python.org/ftp/python/3.8.9/python-3.8.9-embed-amd64.zip",
+            };
+
+
 
             Installer.LogMessage += Console.WriteLine;
 
-            //
-            // install from the given source
-            Python.Deployment.Installer.SetupPython().Wait();
+			//
+			// install from the given source
+			await Python.Deployment.Installer.SetupPython();
 
-            Installer.TryInstallPip();
-
-        }
+			await Installer.TryInstallPip();
 
 
-        protected virtual void InitializePythonComponents()
-        {
+			//Python.Deployment.Installer.SetupPython().Wait();
+			//Installer.TryInstallPip();
+
+		}
 
 
-            PythonEngine.Initialize();
+		protected virtual void InitializePythonComponents()
+		{
+
+
+			PythonEngine.Initialize();
             // dynamic sys = PythonEngine.ImportModule("sys");
             // Console.WriteLine("Python version: " + sys.version);
         }
 
 
         public abstract Shared.SudokuGrid Solve(Shared.SudokuGrid s);
+
+
+        protected void AddNumpyConverterScript(PyModule scope)
+        {
+
+			string numpyConverterCode = Resources.numpy_converter_py;
+			scope.Exec(numpyConverterCode);
+			
+		}
+			
+
+
 
     }
 

@@ -40,9 +40,7 @@ namespace Sudoku.Shared
         public static async Task SetupPython(bool force = false)
         {
             Environment.SetEnvironmentVariable("PATH", MacInstaller.InstallPythonHome + ";" + Environment.GetEnvironmentVariable("PATH"));
-            if (!force && Directory.Exists(MacInstaller.InstallPythonHome) && File.Exists(Path.Combine(MacInstaller.InstallPythonHome, "python.exe")))
-                ;
-            else
+            if (force || !Directory.Exists(MacInstaller.InstallPythonHome) || !File.Exists(Path.Combine(MacInstaller.InstallPythonHome, "python.exe")))              
             {
                 string zip = await MacInstaller.Source.RetrievePythonZip(MacInstaller.InstallPath);
                 if (string.IsNullOrWhiteSpace(zip))
@@ -58,7 +56,9 @@ namespace Sudoku.Shared
                         catch (Exception ex)
                         {
                             MacInstaller.Log("SetupPython: Error extracting zip file: " + zip);
-                        }
+                            MacInstaller.Log(ex.ToString());
+
+						}
                     }));
             }
         }
@@ -130,7 +130,8 @@ namespace Sudoku.Shared
             catch (Exception ex)
             {
                 Console.WriteLine("Error extracting zip file: " + wheelPath);
-            }
+				MacInstaller.Log(ex.ToString());
+			}
             File.Delete(wheelPath);
             string path = Path.Combine(MacInstaller.InstallPythonHome, MacInstaller.Source.GetPythonVersion() + "._pth");
             if (!File.Exists(path) || ((IEnumerable<string>)File.ReadAllLines(path)).Contains<string>("./Lib"))
@@ -141,7 +142,7 @@ namespace Sudoku.Shared
             });
         })).ConfigureAwait(false);
 
-        public static void PipInstallWheel(Assembly assembly, string resource_name, bool force = false)
+        public static async Task PipInstallWheel(Assembly assembly, string resource_name, bool force = false)
         {
             string resourceKey = MacInstaller.GetResourceKey(assembly, resource_name);
             if (string.IsNullOrWhiteSpace(resourceKey))
@@ -161,7 +162,7 @@ namespace Sudoku.Shared
             string filePath = Path.Combine(str1, resourceKey);
             string str2 = Path.Combine(MacInstaller.InstallPythonHome, "Scripts", "pip3");
             MacInstaller.CopyEmbeddedResourceToFile(assembly, resourceKey, filePath, force);
-            MacInstaller.TryInstallPip();
+            await MacInstaller.TryInstallPip();
             string str3 = filePath;
             MacInstaller.RunCommand(str2 + " install " + str3);
         }
@@ -200,9 +201,9 @@ namespace Sudoku.Shared
 
         public static string GetResourceKey(Assembly assembly, string embedded_file) => ((IEnumerable<string>)assembly.GetManifestResourceNames()).FirstOrDefault<string>((Func<string, bool>)(x => x.Contains(embedded_file)));
 
-        public static void PipInstallModule(string module_name, string version = "", bool force = false)
+        public static async Task PipInstallModule(string module_name, string version = "", bool force = false)
         {
-            MacInstaller.TryInstallPip();
+           await MacInstaller.TryInstallPip();
             if (MacInstaller.IsModuleInstalled(module_name) && !force)
                 return;
             // string str1 = Path.Combine(MacInstaller.EmbeddedPythonHome, "Scripts", "pip");
@@ -215,7 +216,7 @@ namespace Sudoku.Shared
             MacInstaller.RunCommand($"{str1} install {module_name}{version} {str2}");
         }
 
-        public static void InstallPip()
+        public static async Task InstallPip()
         {
             string path = Path.Combine(MacInstaller.InstallPythonHome, "Lib");
             if (!Directory.Exists(path))
@@ -225,13 +226,13 @@ namespace Sudoku.Shared
             MacInstaller.RunCommand("cd " + MacInstaller.InstallPythonHome + " && python get-pip.py");
         }
 
-        public static bool TryInstallPip(bool force = false)
+        public static async Task<bool> TryInstallPip(bool force = false)
         {
             if (!(!MacInstaller.IsPipInstalled() | force))
                 return false;
             try
             {
-                MacInstaller.InstallPip();
+               await MacInstaller.InstallPip();
                 return true;
             }
             catch (Exception ex)
@@ -301,7 +302,8 @@ namespace Sudoku.Shared
                     }
                     catch (Exception ex)
                     {
-                    }
+						MacInstaller.Log(ex.ToString());
+					}
                 }));
                 await Task.Run((Action)(() => process.WaitForExit()), token);
                 // if (process.ExitCode == 0)
@@ -395,12 +397,11 @@ namespace Sudoku.Shared
                         }
                         catch (Exception ex)
                         {
-                        }
+							MacInstaller.Log(ex.ToString());
+						}
                     }));
                     await Task.Run((Action)(() => process.WaitForExit()), token);
-                    if (process.ExitCode == 0)
-                        ;
-                    else
+                    if (process.ExitCode != 0)
                         MacInstaller.Log(" => exit code " + process.ExitCode.ToString());
                 }
                 catch (Exception ex)

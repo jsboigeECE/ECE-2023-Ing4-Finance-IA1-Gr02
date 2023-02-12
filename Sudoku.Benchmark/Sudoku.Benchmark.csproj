@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-﻿<Project Sdk="Microsoft.NET.Sdk">
-=======
 <Project Sdk="Microsoft.NET.Sdk">
->>>>>>> Stashed changes
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
@@ -11,6 +7,7 @@
     <PackageReference Include="BenchmarkDotNet" Version="0.13.4" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Sudoku.Norvig\Sudoku.Norvig.csproj" />
     <ProjectReference Include="..\Sudoku.Recuit\Sudoku.Recuit.csproj" />
     <ProjectReference Include="..\Sudoku.Allister\Sudoku.Allister.csproj" />
     <ProjectReference Include="..\Sudoku.Backtracking\Sudoku.Backtracking.csproj" />
@@ -18,13 +15,9 @@
     <ProjectReference Include="..\Sudoku.Z3Solvers\Sudoku.Z3Solvers.csproj" />
     <ProjectReference Include="..\Sudoku.DlxLib\Sudoku.DlxLib.csproj" />
     <ProjectReference Include="..\Sudoku.Genetic\Sudoku.Genetic.csproj" />
-<<<<<<< Updated upstream
     <ProjectReference Include="..\Sudoku.TechniquesHumaines\Sudoku.TechniquesHumaines.csproj" />
+    <ProjectReference Include="..\sudoku.ORtools\sudoku.ORtools.csproj" />
+    <ProjectReference Include="..\Sudoku.Bayesien\Sudoku.Bayesien.csproj" />
 
   </ItemGroup>
 </Project>
-=======
-    <ProjectReference Include="..\sudoku.ORtools\sudoku.ORtools.csproj" />
-  </ItemGroup>
-</Project>
->>>>>>> Stashed changes
