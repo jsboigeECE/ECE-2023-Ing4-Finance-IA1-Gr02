@@ -16,5 +16,6 @@
     <ProjectReference Include="..\Sudoku.Genetic\Sudoku.Genetic.csproj" />
     <ProjectReference Include="..\Sudoku.TechniquesHumaines\Sudoku.TechniquesHumaines.csproj" />
     <ProjectReference Include="..\Sudoku.Norvig\Sudoku.Norvig.csproj" />
+    <ProjectReference Include="..\SudokuNorvigSolverTableauImplementation\SudokuNorvigSolverTableauImplementation.csproj" />
   </ItemGroup>
 </Project>
