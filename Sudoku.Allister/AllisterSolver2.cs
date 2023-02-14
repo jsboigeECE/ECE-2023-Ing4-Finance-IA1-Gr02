@@ -32,5 +32,12 @@ namespace Sudoku.Allister
             }
             //}
         }
-    }
+
+        protected override void InitializePythonComponents()
+        {
+	        InstallPipModule("ortools");
+	        base.InitializePythonComponents();
+        }
+
+	}
 }
